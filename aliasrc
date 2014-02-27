@@ -1,5 +1,6 @@
 alias home='cd ~'
-alias l='ls -lahp'
+alias c=clear
+alias l='ls -lahpG'
 alias dir='l'
 alias hosts='$EDITOR /etc/hosts'
 alias profile='$EDITOR ~/.bash_profile'
