@@ -115,7 +115,7 @@ export PATH=$PATH:/opt/local/bin:/opt/local/sbin:/usr/bin:/usr/local:/usr/local/
 export PATH=$PATH:/Library/Frameworks/Python.framework/Versions/2.7/bin
 # GIT
 export PATH=$PATH:/usr/local/git
-export EDITOR='subl'
+export EDITOR='subl -w'
 
 # Set tab-completion to be case-insensitive
 # set completion-ignore-case On
