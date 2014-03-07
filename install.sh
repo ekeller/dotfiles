@@ -2,10 +2,10 @@
 
 if [ ! -d "$HOME/.dotfiles" ]; then
 	echo "Installing dotfiles for the first time"
-	git clone https://github.com/skwp/dotfiles.git "$HOME/.yadr"
-	cd "$HOME/.yadr"
-	[ "$1" == "ask" ] && export ASK="true"
-	rake install
+	git clone https://ekeller@bitbucket.org/ekeller/dotfiles.git "$HOME/.dotfiles"
+	cd "$HOME/.dotfiles"
+	#[ "$1" == "ask" ] && export ASK="true"
+	#rake install
 else
-	echo "YADR is already installed"
+	echo "dotfiles already installed"
 fi
