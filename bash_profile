@@ -15,60 +15,135 @@ if [ -f /etc/bashrc ]; then
 fi
 
 #-------------------------------------------------------------
-# Color definitions (taken from Color Bash Prompt HowTo).
+# Aliases
 #-------------------------------------------------------------
 
-# Normal Colors
-Black='\e[0;30m'
-Red='\e[0;31m'
-Green='\e[0;32m'
-Yellow='\e[0;33m'
-Blue='\e[0;34m'
-Purple='\e[0;35m'
-Cyan='\e[0;36m'
-White='\e[0;37m'
+if [ -f ~/.bash_aliases ]; then
+	. ~/.bash_aliases
+fi
+
+#-------------------------------------------------------------
+# Color definitions
+#-------------------------------------------------------------
+
+Black=$'\e[0;30m'
+Red=$'\e[0;31m'
+Green=$'\e[0;32m'
+Yellow=$'\e[0;33m'
+Blue=$'\e[0;34m'
+Purple=$'\e[0;35m'
+Cyan=$'\e[0;36m'
+White=$'\e[0;37m'
 
 # Bold
-BBlack='\e[1;30m'
-BRed='\e[1;31m'
-BGreen='\e[1;32m'
-BYellow='\e[1;33m'
-BBlue='\e[1;34m'
-BPurple='\e[1;35m'
-BCyan='\e[1;36m'
-BWhite='\e[1;37m'
+BBlack=$'\e[1;30m'
+BRed=$'\e[1;31m'
+BGreen=$'\e[1;32m'
+BYellow=$'\e[1;33m'
+BBlue=$'\e[1;34m'
+BPurple=$'\e[1;35m'
+BCyan=$'\e[1;36m'
+BWhite=$'\e[1;37m'
 
 # Background
-On_Black='\e[40m'
-On_Red='\e[41m'
-On_Green='\e[42m'
-On_Yellow='\e[43m'
-On_Blue='\e[44m'
-On_Purple='\e[45m'
-On_Cyan='\e[46m'
-On_White='\e[47m'
+On_Black=$'\e[40m'
+On_Red=$'\e[41m'
+On_Green=$'\e[42m'
+On_Yellow=$'\e[43m'
+On_Blue=$'\e[44m'
+On_Purple=$'\e[45m'
+On_Cyan=$'\e[46m'
+On_White=$'\e[47m'
 
 # Color Reset
-NC="\e[m"
+NC=$'\e[0m'
 
 # Bold White on red background
 ALERT=${BWhite}${On_Red}
 
-# Change the window title of X terminals
-case ${TERM} in
-	xterm*|rxvt*|Eterm|aterm|kterm|gnome)
-		PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME%%.*}:${PWD/$HOME/~}\007"'
-		;;
-	screen)
-		PROMPT_COMMAND='echo -ne "\033_${USER}@${HOSTNAME%%.*}:${PWD/$HOME/~}\033\\"'
-		;;
-esac
+export CLICOLOR=1
+export LSCOLORS=ExFxCxDxBxegedabagacad
+
+#------------------------------------------------
+# GIT
+#------------------------------------------------
+
+# get the name of the branch we are on
+function git_prompt_info() {
+	local dir=. head
+	until [ "$dir" -ef / ]; do
+		if [ -f "$dir/.git/HEAD" ]; then
+			head=$(< "$dir/.git/HEAD")
+			git_info="[ ${Yellow}"
+			if [[ $head == ref:\ refs/heads/* ]]; then
+				git_info="${git_info}${head#*/*/}"
+			elif [[ $head != '' ]]; then
+				git_info="$git_info (detached)"
+			else
+				git_info="$git_info (unknown)"
+			fi
+			git_info="${git_info}${NC} ]"
+			return
+		fi
+		dir="../$dir"
+	done
+	git_info=''
+}
+
+# This keeps the number of todos always available the right hand side of my
+# command line. I filter it to only count those tagged as "+next", so it's more
+# of a motivation to clear out the list.
+todo_count() {
+	if $(which todo &> /dev/null)
+	then
+		num=$(echo $(todo ls $1 | wc -l))
+		let todos=num-2
+		echo "$todos"
+	fi
+}
+
+function todo_prompt() {
+	local COUNT=$(todo_count $1);
+	if [ $COUNT != 0 ]; then
+		echo "$1: $COUNT";
+	else
+		echo "";
+	fi
+}
+
+function notes_count() {
+	if [[ -z $1 ]]; then
+		local NOTES_PATTERN="TODO|FIXME|HACK";
+	else
+		local NOTES_PATTERN=$1;
+	fi
+	grep -ERn "\b($NOTES_PATTERN)\b" {app,config,lib,spec,test} 2>/dev/null | wc -l | sed 's/ //g'
+}
+
+function notes_prompt() {
+	local COUNT=$(notes_count $1);
+	if [ $COUNT != 0 ]; then
+		echo "$1: $COUNT";
+	else
+		echo "";
+	fi
+}
 
 # Customized prompt
-# →
-export PS1="
-\[${Red}\]\w
-\[${BCyan}\]${LOGNAME}\[${BYellow}\]@\[${BGreen}\]"`hostname`"\[${NC}\]\[${BBlue}\] ► \[${NC}\]"
+# → ►
+PROMPT_COMMAND="echo -n '${BBlack}$(date +%Y-%m-%d) ${NC}'; $PROMPT_COMMAND"
+PROMPT=""
+
+# FS path
+PROMPT="${PROMPT}[ \[${Red}\]\w\[${NC}\] ]"
+
+# Git repo
+PROMPT_COMMAND="git_prompt_info; $PROMPT_COMMAND"
+PROMPT="${PROMPT}\$git_info"
+
+PROMPT="${PROMPT}
+\[${BBlack}\]$(date +%H:%M) \[${Blue}\]${LOGNAME}\[${BYellow}\]@\[${BBlue}\]"`hostname`"\[${NC}\]\[${BGreen}\] → \[${NC}\]"
+export PS1=$PROMPT
 
 export PATH=$PATH:/opt/local/bin:/opt/local/sbin:/usr/bin:/usr/local:/usr/local/bin:/usr/local/sbin
 
@@ -80,12 +155,14 @@ export PATH=$PATH:/usr/local/git
 
 export EDITOR='subl'
 
+# Set tab-completion to be case-insensitive
+set completion-ignore-case On
 
-### Set tab-completion to be case-insensitive
-set completion-ignore-case
+# Tab completion for sudo
+complete -cf sudo
 
-### Show all tab-completed matches
+# Show all tab-completed matches
 set show-all-if-ambiguous
 
-### Set all symlinked-directories to be shown
+# Set all symlinked-directories to be shown
 set show-all-symlinked-directories
