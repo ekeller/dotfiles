@@ -1,10 +1,12 @@
 alias home='cd ~'
-alias c=clear
+alias cls=clear
 alias l='ls -lahpG'
 alias dir='l'
+alias lm='lsnew'
 alias hosts='$EDITOR /etc/hosts'
 alias profile='$EDITOR ~/.bash_profile'
 alias top='top -ocpu'
+alias back='cd $OLDPWD'
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
