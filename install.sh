@@ -1,11 +1,12 @@
 #!/bin/sh
 
 if [ ! -d "$HOME/.dotfiles" ]; then
-	echo "Installing dotfiles for the first time"
+	echo "Installing ekeller dotfiles"
 	git clone https://ekeller@bitbucket.org/ekeller/dotfiles.git "$HOME/.dotfiles"
 	cd "$HOME/.dotfiles"
-	#[ "$1" == "ask" ] && export ASK="true"
-	#rake install
+	scp bash_aliases ~/.bash_aliases
+	scp bash_profile ~/.bash_profile
+	# . osx/defaults.sh
 else
 	echo "dotfiles already installed"
 fi
