@@ -1,0 +1,19 @@
+{
+	"installed_packages":
+	[
+		"AlignTab",
+		"Color Highlighter",
+		"DocBlockr",
+		"Emmet",
+		"GitGutter",
+		"HTML5",
+		"Pretty JSON",
+		"Sass",
+		"SublimeLinter",
+		"SublimeLinter-jshint",
+		"Tag",
+		"TodoReview",
+		"WakaTime",
+		"YUI Compressor"
+	]
+}
