@@ -3,10 +3,12 @@
 	[
 		"AlignTab",
 		"Color Highlighter",
+		"ColorPicker",
 		"DocBlockr",
 		"Emmet",
 		"GitGutter",
 		"HTML5",
+		"Package Control",
 		"Pretty JSON",
 		"Sass",
 		"SublimeLinter",
