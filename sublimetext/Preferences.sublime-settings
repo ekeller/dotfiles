@@ -1,19 +1,39 @@
 {
 	"caret_style": "phase",
-	"close_windows_when_empty": false,
-	"color_scheme": "Packages/User/Monokai (SL).tmTheme",
+	"close_windows_when_empty": true,
+	"color_scheme": "Packages/User/SublimeLinter/Monokai (SL).tmTheme",
+	"detect_indentation": true,
 	"draw_white_space": "all",
-	"font-size": 14,
-	"font_size": 11,
-	"highlight_line": true,
+	"font_size": 12,
 	"highlight_modified_tabs": true,
+	"hightlight_line": true,
 	"ignored_packages":
 	[
 		"Vintage"
 	],
-	"margin": 4,
+	"margin": 0,
 	"open_files_in_new_window": false,
+	"paths":
+	{
+		"linux":
+		[
+		],
+		"osx":
+		[
+			"/usr/local/bin/"
+		],
+		"windows":
+		[
+		]
+	},
+	"rulers":
+	[
+		80
+	],
 	"shift_tab_unindent": true,
-	"trim_trailing_white_space_on_save": true,
+	// "trim_trailing_white_space_on_save": true,
+	"tab_size": 4,
+	"theme": "Boxy Monokai.sublime-theme",
+	"translate_tabs_to_spaces": true,
 	"word_wrap": true
 }

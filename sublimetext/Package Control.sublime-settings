@@ -1,19 +1,33 @@
 {
+	"bootstrapped": true,
+	"in_process_packages":
+	[
+	],
 	"installed_packages":
 	[
+		"A File Icon",
 		"AlignTab",
+		"ASCII Decorator",
+		"Boxy Theme",
 		"Color Highlighter",
+		"ColorPicker",
 		"DocBlockr",
 		"Emmet",
 		"GitGutter",
 		"HTML5",
+		"Jinja2",
+		"JSHint Gutter",
+		"Minify",
+		"Package Control",
 		"Pretty JSON",
 		"Sass",
 		"SublimeLinter",
 		"SublimeLinter-jshint",
+		"SublimeLinter-php",
+		"Syntax Highlighting for Sass",
 		"Tag",
 		"TodoReview",
-		"WakaTime",
-		"YUI Compressor"
+		"Twilightcyanide Colorscheme",
+		"WakaTime"
 	]
 }

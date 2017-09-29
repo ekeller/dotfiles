@@ -1,0 +1,8 @@
+{
+	"patterns": {
+		"TODO": "@TODO[\\s]*?:[\\s]*(?P<todo>.*)$",
+		"FIXME": "@FIX[\\s]*?ME[\\s]*?:+(?P<fixme>.*)$",
+		"BUG": "@BUG[\\s]*?:+(?P<bug>.*)$",
+		"REVIEW": "@REVIEW[\\s]*?:+(?P<review>.*)$"
+	}
+}
