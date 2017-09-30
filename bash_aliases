@@ -1,12 +1,21 @@
 alias home='cd ~'
-alias cls=clear
+alias cls='clear'
+alias clr='clear'
 alias l='ls -lahpG'
 alias dir='l'
 alias lm='lsnew'
 alias hosts='$EDITOR /etc/hosts'
+alias vhosts='$EDITOR /Applications/MAMP/conf/apache/extra/httpd-vhosts.conf'
 alias profile='$EDITOR ~/.bash_profile'
 alias top='top -ocpu'
 alias back='cd $OLDPWD'
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
+# ConsumerAffairs
+# changes to repos root directory
+alias cd-ca='cd ~/Sites/consumeraffairs'
+alias cd-fe='cd ~/Sites/frontend'
+alias cd-sg='cd ~/Sites/styleguide'
+alias sca='sca'
+alias kca='kca'

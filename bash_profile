@@ -21,6 +21,9 @@ fi
 if [ -f ~/.bash_functions ]; then
 	. ~/.bash_functions;
 fi
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+	. $(brew --prefix)/etc/bash_completion;
+fi
 
 #-------------------------------------------------------------
 # Color definitions
@@ -83,6 +86,28 @@ function git_prompt_info() {
 }
 
 #------------------------------------------------
+# CA functions
+#------------------------------------------------
+function sca() {
+	cd-ca
+	find . -name '*.pyc' -delete
+	sudo nginx
+	mysql.server start
+	python manage.py celery purge
+	echo 'python manage.py celeryd -l info -Q celery'
+	echo 'redis-server'
+	echo 'python manage.py runserver'
+}
+
+function kca() {
+	sudo nginx -s stop
+	mysql.server stop
+	kill $(ps aux | grep '[r]edis' | awk '{print $2}')
+	kill $(ps aux | grep '[c]elery' | awk '{print $2}')
+	kill $(ps aux | grep '[p]ython' | awk '{print $2}')
+}
+
+#------------------------------------------------
 # Lists the most recent modified files
 #------------------------------------------------
 function lsnew() {
@@ -91,7 +116,6 @@ function lsnew() {
 
 # Customized prompt
 # → ►
-PROMPT_COMMAND="echo -n '${BBlack}$(date +%Y-%m-%d) ${NC}'; $PROMPT_COMMAND"
 PROMPT=""
 
 # FS path
@@ -102,7 +126,7 @@ PROMPT_COMMAND="git_prompt_info; $PROMPT_COMMAND"
 PROMPT="${PROMPT}\$git_info"
 
 PROMPT="${PROMPT}
-\[${BBlack}\]$(date +%H:%M) \[${Blue}\]${LOGNAME}\[${BYellow}\]@\[${BBlue}\]"`hostname`"\[${NC}\]\[${BGreen}\] → \[${NC}\]"
+\[${Blue}\]${LOGNAME}\[${BYellow}\]@\[${BBlue}\]"`hostname`"\[${NC}\]\[${BGreen}\] → \[${NC}\]"
 
 #------------------------------------------------
 # EXPORTS
@@ -110,12 +134,23 @@ PROMPT="${PROMPT}
 export CLICOLOR=1
 export LSCOLORS=ExFxCxDxBxegedabagacad
 export PS1=$PROMPT
-export PATH=$PATH:/opt/local/bin:/opt/local/sbin:/usr/bin:/usr/local:/usr/local/bin:/usr/local/sbin
+
+export PATH=${PATH}:/opt/local/bin:/opt/local/sbin:/usr/local:/usr/local/bin:/usr/local/sbin:/usr/bin
+
 # Setting PATH for Python 2.7
-export PATH=$PATH:/Library/Frameworks/Python.framework/Versions/2.7/bin
+#export PATH=$PATH:/Library/Frameworks/Python.framework/Versions/2.7/bin
+
 # GIT
-export PATH=$PATH:/usr/local/git
-export EDITOR='subl -w'
+#export PATH=$PATH:/usr/local/git
+
+# ANDROID
+#export PATH=${PATH}:/Developer/SDKs/android-sdk-macosx/platform-tools:/Developer/SDKs/android-sdk-macosx/tools
+
+# ST3
+export EDITOR='subl'
+
+# JAVA
+export JAVA_HOME=$(/usr/libexec/java_home)
 
 # Set tab-completion to be case-insensitive
 # set completion-ignore-case On
@@ -128,3 +163,8 @@ export EDITOR='subl -w'
 
 # Set all symlinked-directories to be shown
 # set show-all-symlinked-directories
+
+# MAMP Mysql
+#export PATH="/Applications/MAMP/Library/bin:$PATH"
+# MAMP PHP
+#export PATH=/Applications/MAMP/bin/php/php5.6.2/bin:$PATH
