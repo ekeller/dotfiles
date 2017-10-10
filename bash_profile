@@ -21,69 +21,13 @@ fi
 if [ -f ~/.bash_functions ]; then
 	. ~/.bash_functions;
 fi
+if [ -f /usr/local/share/liquidprompt ]; then
+	. /usr/local/share/liquidprompt
+fi
+
 if [ -f $(brew --prefix)/etc/bash_completion ]; then
 	. $(brew --prefix)/etc/bash_completion;
 fi
-
-#-------------------------------------------------------------
-# Color definitions
-#-------------------------------------------------------------
-Black=$'\e[0;30m'
-Red=$'\e[0;31m'
-Green=$'\e[0;32m'
-Yellow=$'\e[0;33m'
-Blue=$'\e[0;34m'
-Purple=$'\e[0;35m'
-Cyan=$'\e[0;36m'
-White=$'\e[0;37m'
-BBlack=$'\e[1;30m'
-BRed=$'\e[1;31m'
-BGreen=$'\e[1;32m'
-BYellow=$'\e[1;33m'
-BBlue=$'\e[1;34m'
-BPurple=$'\e[1;35m'
-BCyan=$'\e[1;36m'
-BWhite=$'\e[1;37m'
-
-# Color Reset
-NC=$'\e[0m'
-
-# Background
-On_Black=$'\e[40m'
-On_Red=$'\e[41m'
-On_Green=$'\e[42m'
-On_Yellow=$'\e[43m'
-On_Blue=$'\e[44m'
-On_Purple=$'\e[45m'
-On_Cyan=$'\e[46m'
-On_White=$'\e[47m'
-
-# Bold White on red background
-ALERT=${BWhite}${On_Red}
-
-#------------------------------------------------
-# GIT
-#------------------------------------------------
-function git_prompt_info() {
-	local dir=. head
-	until [ "$dir" -ef / ]; do
-		if [ -f "$dir/.git/HEAD" ]; then
-			head=$(< "$dir/.git/HEAD")
-			git_info="[ ${Yellow}"
-			if [[ $head == ref:\ refs/heads/* ]]; then
-				git_info="${git_info}${head#*/*/}"
-			elif [[ $head != '' ]]; then
-				git_info="$git_info (detached)"
-			else
-				git_info="$git_info (unknown)"
-			fi
-			git_info="${git_info}${NC} ]"
-			return
-		fi
-		dir="../$dir"
-	done
-	git_info=''
-}
 
 #------------------------------------------------
 # CA functions
@@ -93,10 +37,12 @@ function sca() {
 	find . -name '*.pyc' -delete
 	sudo nginx
 	mysql.server start
-	python manage.py celery purge
-	echo 'python manage.py celeryd -l info -Q celery'
+	./manage.py celery purge
+	./manage.py celeryd -l info -Q celery
 	echo 'redis-server'
-	echo 'python manage.py runserver'
+	echo './manage.py runserver'
+	echo 'newrelic-admin run-python manage.py runserver'
+	echo 'redis-cli flushall'
 }
 
 function kca() {
@@ -114,43 +60,31 @@ function lsnew() {
 	ls -lt ${1+"$@"} | head -20;
 }
 
-# Customized prompt
-# → ►
-PROMPT=""
-
-# FS path
-PROMPT="${PROMPT}[ \[${Red}\]\w\[${NC}\] ]"
-
-# Git repo
-PROMPT_COMMAND="git_prompt_info; $PROMPT_COMMAND"
-PROMPT="${PROMPT}\$git_info"
-
-PROMPT="${PROMPT}
-\[${Blue}\]${LOGNAME}\[${BYellow}\]@\[${BBlue}\]"`hostname`"\[${NC}\]\[${BGreen}\] → \[${NC}\]"
-
 #------------------------------------------------
 # EXPORTS
 #------------------------------------------------
 export CLICOLOR=1
 export LSCOLORS=ExFxCxDxBxegedabagacad
-export PS1=$PROMPT
-
+# MAMP PHP
+#export PATH=/Applications/MAMP/bin/php/php5.6.2/bin:$PATH
 export PATH=${PATH}:/opt/local/bin:/opt/local/sbin:/usr/local:/usr/local/bin:/usr/local/sbin:/usr/bin
-
 # Setting PATH for Python 2.7
 #export PATH=$PATH:/Library/Frameworks/Python.framework/Versions/2.7/bin
-
 # GIT
-#export PATH=$PATH:/usr/local/git
-
+export PATH=$PATH:/usr/local/git
 # ANDROID
 #export PATH=${PATH}:/Developer/SDKs/android-sdk-macosx/platform-tools:/Developer/SDKs/android-sdk-macosx/tools
-
 # ST3
 export EDITOR='subl'
-
 # JAVA
 export JAVA_HOME=$(/usr/libexec/java_home)
+# AMAZON
+#export EC2_HOME=/usr/local/ec2/ec2-api-tools-1.7.5.0
+
+#export AWS_ACCESS_KEY=AKIAIMMITMO4R5OD6B4A
+#export AWS_SECRET_KEY=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
+
+#export PATH=$PATH:$EC2_HOME/bin
 
 # Set tab-completion to be case-insensitive
 # set completion-ignore-case On
@@ -163,8 +97,24 @@ export JAVA_HOME=$(/usr/libexec/java_home)
 
 # Set all symlinked-directories to be shown
 # set show-all-symlinked-directories
+##
+# Your previous /Users/ekeller/.bash_profile file was backed up as /Users/ekeller/.bash_profile.macports-saved_2014-09-16_at_23:23:25
+##
+
+# MacPorts Installer addition on 2014-09-16_at_23:23:25: adding an appropriate PATH variable for use with MacPorts.
+export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
+# Finished adapting your PATH environment variable for use with MacPorts.
 
 # MAMP Mysql
 #export PATH="/Applications/MAMP/Library/bin:$PATH"
-# MAMP PHP
-#export PATH=/Applications/MAMP/bin/php/php5.6.2/bin:$PATH
+
+# NEW RELIC
+export NEW_RELIC_CONFIG_FILE=~/.newrelic.ini
+export NEW_RELIC_ENVIRONMENT=development
+
+# PYENVS
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+export NVM_DIR="/Users/ekeller/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+
