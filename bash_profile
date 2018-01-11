@@ -15,12 +15,17 @@ shopt -s histappend
 if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
+
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
+
 if [ -f ~/.bash_functions ]; then
     . ~/.bash_functions;
 fi
+
+# Liquid Prompt
+# https://github.com/nojhan/liquidprompt#test-drive-and-installation
 if [ -f /usr/local/share/liquidprompt ]; then
     . /usr/local/share/liquidprompt
 fi
@@ -32,7 +37,6 @@ fi
 #------------------------------------------------
 # CA functions
 #------------------------------------------------
-
 HOUR=$(date "+%H");
 
 function startWorking() {
@@ -145,7 +149,7 @@ export PATH=$PATH:/usr/local/git
 # ANDROID
 # export PATH=${PATH}:/Developer/SDKs/android-sdk-macosx/platform-tools:/Developer/SDKs/android-sdk-macosx/tools
 
-# ST3
+# ST3 or your editor CLI
 export EDITOR='subl'
 
 # JAVA
