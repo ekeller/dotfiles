@@ -37,49 +37,55 @@ fi
 #------------------------------------------------
 # CA functions
 #------------------------------------------------
+
 HOUR=$(date "+%H");
+
+function servicesStatus() {
+    NGINX=$(ps aux | grep '[n]ginx');
+    if [ -n '$NGINX' ]; then
+        echo 'NGINX is NOT running!';
+        echo 'Starting NGINX: sudo nginx.';
+        sudo nginx
+    else
+        echo 'NGINX is already running!';
+    fi
+
+    MYSQL=$(ps aux | grep '[m]ysql');
+    if [ -n '$MYSQL' ]; then
+        echo 'MYSQL is NOT running!';
+        echo 'Start MYSQL: mysql.server start';
+        mysql.server start
+    else
+        echo 'MYSQL is already running!';
+    fi
+
+    REDIS=$(ps aux | grep '[r]edis');
+    if [ -n '$REDIS' ]; then
+        echo 'REDIS is NOT running!'
+        echo 'Starting REDIS: redis-server.';
+        redis-server
+    else
+        echo 'REDIS is already running!';
+    fi
+}
 
 function startWorking() {
     GREETINGS='Hello, ';
     if [ $HOUR -gt 0 ] && [ $HOUR -lt 13 ]; then
-            GREETINGS="$GREETINGS good morning!";
-            echo $GREETINGS;
+        GREETINGS="$GREETINGS good morning!";
+        echo $GREETINGS;
     elif [ $HOUR -gt 12 ] && [ $HOUR -lt 19 ]; then
-            GREETINGS="$GREETINGS good evening!";
+        GREETINGS="$GREETINGS good evening!";
     elif [ $HOUR -gt 18 ] && [ $HOUR -lt 24 ]; then
-            GREETINGS="$GREETINGS good night!";
+        GREETINGS="$GREETINGS good night!";
     fi
     echo $GREETINGS;
     echo;
-
-    REDIS=$(ps aux | grep '[r]edis');
-    if [ -n '$REDIS' ]; then
-        echo 'REDIS is already running!';
-    else
-        echo 'Start REDIS: redis-server';
-        redis-server
-    fi
-
-    NGINX=$(ps aux | grep '[n]ginx');
-    if [ -n'$NGINX' ]; then
-        echo 'NGINX is already running!';
-    else
-        echo 'Start NGINX: sudo nginx';
-        sudo nginx
-    fi
-
-    MYSQL=$(ps aux | grep '[m]ysql');
-    if [ -n'$MYSQL' ]; then
-        echo 'MYSQL is already running!';
-    else
-        echo 'Start MYSQL: mysql.server start';
-        mysql.server start
-    fi
-
+    servicesStatus;
     echo;
-    echo 'BrowserStackLocal --key VkR9AvRsgWaeZwrhwVth';
-    echo;
-    update_repos;
+    # echo 'BrowserStackLocal --key VkR9AvRsgWaeZwrhwVth';
+    # echo;
+    # update_repos;
     # sudo nginx
     # mysql.server start
     # ./manage.py celery purge -f
@@ -91,39 +97,63 @@ function startWorking() {
 }
 
 function kca() {
-    sudo nginx -s stop
-    mysql.server stop
-    kill $(ps aux | grep '[r]edis' | awk '{print $2}')
-    kill $(ps aux | grep '[c]elery' | awk '{print $2}')
-    kill $(ps aux | grep '[p]ython' | awk '{print $2}')
+    hasmysql=$(ps aux | grep '[n]ginx' | awk '{print $2}');
+    if [ $hasmysql != "" ]; then
+        echo 'bosta';
+        #sudo nginx -s stop;
+    fi
+    if [ "ps aux | grep '[m]ysql' | awk '{print $2}'" != "" ]; then
+        echo 'bosta';
+        #mysql.server stop;
+    fi
+    kill -9 $(ps aux | grep '[r]edis' | awk '{print $2}')
+    kill -9 $(ps aux | grep '[c]elery' | awk '{print $2}')
+    kill -9 $(ps aux | grep '[p]ython' | awk '{print $2}')
 }
 
 function update_repos() {
-    echo 'UPDATING YOUR REPOS, YOU ARE WELCOME!';
-    echo;
+    echo -e 'UPDATING YOUR REPOS, YOU ARE WELCOME!\n'
     ca;
-    pwd;
+    echo PULLING $(basename `pwd`) | awk '{print toupper($0)}';
     echo '================================';
     git checkout qa;
     git pull ca qa;
+    echo -e '\nPUSHING TO ORIGIN';
+    git push origin qa;
     echo;
     fe;
-    pwd;
+    echo PULLING $(basename `pwd`) | awk '{print toupper($0)}';
     echo '================================';
     git checkout qa;
     git pull ca qa;
+    echo -e '\nPUSHING TO ORIGIN';
+    git push origin qa;
     echo;
     sg;
-    pwd;
+    echo PULLING $(basename `pwd`) | awk '{print toupper($0)}';
     echo '================================';
     git checkout qa;
     git pull ca qa;
+    echo -e '\nPUSHING TO ORIGIN';
+    git push origin qa;
     echo;
     mt;
-    pwd;
+    echo PULLING $(basename `pwd`) | awk '{print toupper($0)}';
     echo '================================';
     git checkout qa;
     git pull ca qa;
+    echo -e '\nPUSHING TO ORIGIN';
+    git push origin qa;
+    echo;
+    bm;
+    echo PULLING $(basename `pwd`) | awk '{print toupper($0)}';
+    echo '================================';
+    git checkout staging;
+    git pull ca staging;
+    echo -e '\nPUSHING TO ORIGIN';
+    git push origin staging;
+    echo;
+    echo 'DONE! Have a good day.';
 }
 
 #------------------------------------------------
@@ -173,4 +203,5 @@ export NVM_DIR="/Users/ekeller/.nvm"
 
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
-export CONTAINER_ENVIRONMENT='local'
+export CONTAINER_ENVIRONMENT='localsheet'
+test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
